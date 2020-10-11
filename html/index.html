@@ -1,36 +1,83 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>AI-helper, easy to train image model</title>
-        <meta charset='utf-8' \>
-        <meta name='viewport' content='width=device-width, initial-scale=1.0' \>
-        <link rel="stylesheet" type="text/css" href="assets/style.css">
-        <style>
-            * {
-                overflow: auto;
-            }
-            body, html {
-                height: 100%;
-            }
-            header {
-                text-align: center;
-            }
-            h1 {
-                color: green;
-            }
-        </style>
-    </head>
-    <body>
-        <header>
-            <h1>AI helper</h1>
-            <b>Let's gather your own images and train them!</b>
-            <hr>    
-        </header>
-        <div class="class-container">
-            <div class="class-header-box">Class1</div>
-            <div class="class-content-box"></div>
-            <!-- <div class="class-header-box"></div>
-            <div class="class-content-box"></div> -->
-        </div>
-    </body>
+  <head>
+    <title>AI-helper, easy to train image model</title>
+    <meta charset="utf-8" \ />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" \ />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="assets/style.css?ver=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+      * {
+        overflow: auto;
+      }
+      body,
+      html {
+        height: 100%;
+      }
+      body {
+        font-family: 'Roboto', sans-serif;
+      }
+      header {
+        text-align: center;
+      }
+      h1 {
+        color: green;
+      }
+      p.fnt-class-name {
+        font-size: 20px;
+        text-indent: 10px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        margin-right: 6px;
+        margin-left: 6px;
+      }
+      p.web-cam-font {
+        font-size:15px;
+        text-indent: 0px;
+        {{/* color: gray; */}}
+      }
+      p.fnt-desc-name {
+        font-size: 15px;
+        text-indent: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>AI helper</h1>
+      <b>Let's gather your own images and train them!</b>
+      <hr />
+    </header>
+    <div class="class-container">
+      <div class="class-header-box">
+        <p class="fnt-class-name">Class1</p>
+      </div>
+      <div class="class-content-box">
+        <p class="fnt-desc-name">Add image samples:</p>
+        <button role="button" id="webcam-button" class="web-cam-box" onclick="testMediaDevice();" value="test">
+            <svg class="sample-source-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill='green' fill-rule="evenodd" clip-rule="evenodd" d="M18 6V10.48L22 6.5V17.5L18 13.52V14.52V18C18 19.1 17.1 20 16 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4H16C17.1 4 18 4.9 18 6ZM16 14.52V9.69V6H4V18H16V14.52Z"></path></svg>
+            <p class="web-cam-font">Webcam</p>
+        </button>
+      </div>
+    </div>
+    <input type="file" accept="image/*" capture="camera" id="camera">
+    <img id="frame">
+    <script>
+    var camera = document.getElementById('camera');
+    var frame = document.getElementById('frame');
+
+    camera.addEventListener('change', function(e) {
+        var file = e.target.files[0]; 
+        // Do something with the image file.
+        frame.src = URL.createObjectURL(file);
+    });
+    </script>
+    <script type="text/javascript" src="./src/button.js"></script>
+    <script type="text/javascript" src="./src/video.js"></script>
+  </body>
 </html>
