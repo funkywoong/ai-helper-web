@@ -42,15 +42,61 @@
     /* padding: 100px; */
     border: 1px solid lightgray;
     margin: 0px;
+    /* display: inline; */
     -webkit-border-bottom-left-radius: 10px;
     -moz-border-radius-bottomleft: 10px;
     -webkit-border-bottom-right-radius: 10px;
     -moz-border-radius-bottomright: 10px;
 }
 
+.gather-img-box {
+    max-width: 100%;
+    display: inline;
+}
+
 .webcam-header {
     max-width: 100%;
     display: inline;
+}
+
+.webcam-booth {
+    width: 260px;
+    height: 300px;
+    background: #D2E6A8;
+    border: 1px solid lightgray;
+    padding : 10px;
+    padding-top: 5px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    justify-content: center;
+    display: inline-block;
+}
+
+.capture-booth {
+    width: 280px;
+    height: 310px;
+    /* max-height: 100%; */
+    /* padding : 10px; */
+    padding-top: 0px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    /* margin-left: 20px; */
+    display: inline-block;
+    /* border: 1px solid lightgray; */
+}
+
+.webcam-header {
+    display: inline-block;
 }
 
 button.web-cam-box {
@@ -76,32 +122,6 @@ button.web-cam-box {
     -moz-border-radius-bottomright: 10px;
     justify-content: center;
     text-align: center;
-}
-
-.webcam-booth {
-    width: 260px;
-    height: 300px;
-    background: #D2E6A8;
-    border: 1px solid lightgray;
-    padding : 10px;
-    padding-top: 5px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    margin-left: 20px;
-    margin-right: 10px;
-    -webkit-border-top-left-radius: 10px;
-    -moz-border-radius-topleft: 10px;
-    -webkit-border-top-right-radius: 10px;
-    -moz-border-radius-topright: 10px;
-    -webkit-border-bottom-left-radius: 10px;
-    -moz-border-radius-bottomleft: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    -moz-border-radius-bottomright: 10px;
-    justify-content: center;
-}
-
-.webcam-header {
-    display: inline-block;
 }
 
 button.add-class {
@@ -146,26 +166,28 @@ button.exit-button {
     width: 18px;
     height: 18px;
     margin-top: 5px;
-    margin-left: 175px;
+    margin-left: 180px;
     background-color: transparent !important;
     border: none;
     padding: 0px;
 }
 
-/* button.exit-button svg {
-    width: 14px;
-    height: 14px;
-} */
-
-#video-container {
-    margin: 0px auto;
-    width: 500px;
-    height: 375px;
-    border: 10px #333 solid;
+canvas.capture-video {
+    width: 520px;
+    height: 390px;
 }
 
-#video-element {
-    width: 500px;
-    height: 375px;
-    background-color: #666;
+img.sample-img {
+    width: 84px;
+    height: 80px;
+    margin-right: 2px;
+    display: inline-block;
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
 }
