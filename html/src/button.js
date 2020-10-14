@@ -3,6 +3,7 @@ var tmpHTML = "";
 var actContainerID = 0;
 var actWCFlag = false;
 
+
 function webcamStart(contId) {
     var targetCBox = document.getElementsByClassName("class-content-box")[contId-1];
     var cBoxChildList = targetCBox.childNodes;
@@ -26,9 +27,41 @@ function webcamStart(contId) {
     
     var newWCBox = document.createElement("div");
     newWCBox.setAttribute("class", "webcam-booth");
-
+    newWCBox.innerHTML = "<h4 class=\"fnt-webcam-start\">Webcam</h4>\n"
+                        + "<video autoplay=\"true\" id=\"myVideo\" width=\"100%\"></video>\n\t"
+                        + "<button role=\"button\" class=\"capture-box\"\n\t>" 
+                        + "<h4 class=\"fnt-capture\">Capture it!</h4></div>";
     targetCBox.appendChild(newWCBox);
     actWCFlag = true;
+
+    // stream webcam videa data
+    streamVideo();
+}
+
+function streamVideo() {
+    var video = document.getElementById('myVideo');
+
+    navigator.getMedia = navigator.getUserMedia ||
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetuserMedia ||
+    navigator.msGetUserMedia;
+
+    if (hasGetUserMedia()) {
+        navigator.getMedia({video:true, audio:false},
+            function(stream) {
+                video.srcObject = stream;
+                video.play(); 
+            }, function(error) {
+                alert('ERROR: ' | error.toString())
+        } );
+    } else {
+        alert("webkitGetUserMedia is not supported");
+    }
+}
+
+function hasGetUserMedia() {
+    return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+            navigator.mozGetuserMedia || navigator.msGetUserMedia);
 }
 
 function orgWebcamEnd(contId) {
