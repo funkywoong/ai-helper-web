@@ -100,6 +100,10 @@ button.web-cam-box {
     justify-content: center;
 }
 
+.webcam-header {
+    display: inline-block;
+}
+
 button.add-class {
     width: 600px;
     height: 100px;
@@ -141,12 +145,11 @@ button.capture-box {
 button.exit-button {
     width: 18px;
     height: 18px;
+    margin-top: 5px;
+    margin-left: 175px;
     background-color: transparent !important;
     border: none;
-    margin: 0px;
-    margin-left: 200px;
     padding: 0px;
-    display: inline;
 }
 
 /* button.exit-button svg {

@@ -27,11 +27,11 @@ function webcamStart(contId) {
     var newWCBox = document.createElement("div");
     newWCBox.setAttribute("class", "webcam-booth");
     newWCBox.innerHTML = "<div class=\"webcam-header\">" 
-                        + "<h4 class=\"fnt-webcam-start\">Webcam\n\t"
+                        + "<h4 class=\"fnt-webcam-start\">Webcam</h4>\n\t"
                         + "<button type=\"button\" class=\"exit-button\">\n\t"
                         + "<svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n\t"
                         + "<path d=\"M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z\" fill=\"green\"></path>"
-                        + "</svg></button></h4></div>\n"
+                        + "</svg></button></div>\n"
                         + "<video autoplay=\"true\" id=\"myVideo\" width=\"100%\"></video>\n\t"
                         + "<button role=\"button\" class=\"capture-box\"\n\t>" 
                         + "<h4 class=\"fnt-capture\">Capture it!</h4></div>";
