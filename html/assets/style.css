@@ -48,6 +48,11 @@
     -moz-border-radius-bottomright: 10px;
 }
 
+.webcam-header {
+    max-width: 100%;
+    display: inline;
+}
+
 button.web-cam-box {
     width: 100px;
     height: 80px;
@@ -132,6 +137,22 @@ button.capture-box {
     -moz-border-radius-bottomright: 10px;
     text-align: center;
 }
+
+button.exit-button {
+    width: 18px;
+    height: 18px;
+    background-color: transparent !important;
+    border: none;
+    margin: 0px;
+    margin-left: 200px;
+    padding: 0px;
+    display: inline;
+}
+
+/* button.exit-button svg {
+    width: 14px;
+    height: 14px;
+} */
 
 #video-container {
     margin: 0px auto;
