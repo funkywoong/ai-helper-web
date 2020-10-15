@@ -99,6 +99,17 @@
     display: inline-block;
 }
 
+.capture-show-box {
+    width: 450px;
+    height: 50px;
+    border: 1px solid lightgray;
+    display: inline-block;
+}
+
+.capture-content-box {
+    display: inline;
+}
+
 button.web-cam-box {
     width: 100px;
     height: 80px;
@@ -122,6 +133,7 @@ button.web-cam-box {
     -moz-border-radius-bottomright: 10px;
     justify-content: center;
     text-align: center;
+    display: inline-block;
 }
 
 button.add-class {
