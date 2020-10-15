@@ -100,14 +100,17 @@
 }
 
 .capture-show-box {
+    margin-top: 4px;
     width: 450px;
-    height: 50px;
+    height: 80px;
     border: 1px solid lightgray;
     display: inline-block;
 }
 
 .capture-content-box {
-    display: inline;
+    display: flex;
+    width: max-content;
+    height: max-content;
 }
 
 button.web-cam-box {
