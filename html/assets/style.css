@@ -101,9 +101,11 @@
 
 .capture-show-box {
     margin-top: 4px;
-    width: 450px;
+    width: 460px;
+    overflow: auto;
+    /* overflow-x: scroll; */
     height: 80px;
-    border: 1px solid lightgray;
+    max-height: 95px;
     display: inline-block;
 }
 
