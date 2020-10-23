@@ -1,28 +1,21 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+from sk_learning import SkHandler
 
 app = Flask(__name__)
 
 HOST_ADDRESSS = '0.0.0.0'
 PORT_NUMBER = '8080'
 
-# @app.route('/')
-# def index():
-#     return "index"
+skhandler = SkHandler()
 
-# @app.route('/learning', methods=['POST'])
-# def learning():
-#     value = request.form['value']
-#     print('in')
-#     print(value)
-#     return 
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/learning')
+@app.route('/learning', methods=['POST'])
 def learning():
-    return render_template('test.html')
+    training_meta = request.get_json(force=True)
+
+    skhandler.construct(training_meta)
+    skhandler.training_test()
+
+    return "hi"
 
 if __name__ == '__main__':
     app.run(HOST_ADDRESSS, PORT_NUMBER)
