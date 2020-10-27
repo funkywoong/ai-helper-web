@@ -8,7 +8,7 @@ var actWCFlag = false;
 var metaObject = {
     'class1' : {
         'id' : 1,
-        'name' : "",
+        'name' : "Class1",
         'sampleCnt' : 0,
         'capShowHTML': null,
         'gatBoxHTML' : null,
@@ -16,7 +16,7 @@ var metaObject = {
     },
     'class2' : {
         'id' : 2,
-        'name' : "",
+        'name' : "Class2",
         'sampleCnt' : 0,
         "capShowHTML": null,
         "gatBoxHTML": null,
@@ -24,25 +24,8 @@ var metaObject = {
     }
 }
 
-function ajaxTest() {
-    $.ajax({
-        type: 'POST',
-        url: "/learning",
-        data: {
-            value: "test complete"
-        },
-        dataType: 'JSON',
-        success: function(result) {
-            console.log("result : " + result);
-        },
-        error: function(xtr, status, error) {
-            console.log(xtr + ": " + status + ": " + error);
-        }
-    })
-}
-
 function webcamStart(contId) {
-    ajaxTest();
+    // ajaxTest();
 
     var targetCBox = document.getElementsByClassName("class-content-box")[contId-1];
     var cBoxChildList = targetCBox.childNodes;
@@ -215,7 +198,15 @@ function snapShot(contId) {
     addImgToCapShowBox(contId, imgDataUrl, tgClass, tgSampCnt);
 
     capBooth.appendChild(tmpImg);
-    console.log(capBooth);
+
+    var sendObject = {
+        'class': tgClass,
+        'name' : metaObject[tgClass].name,
+        'imgId': tgSampCnt,
+        'imgSrc': imgDataUrl
+    }
+
+    putImgToS3(sendObject);
 }
 
 function addImgToCapShowBox(contId, imgDataUrl, tgClass, tgSampCnt) {
@@ -231,9 +222,43 @@ function addImgToCapShowBox(contId, imgDataUrl, tgClass, tgSampCnt) {
     }
 }
 
+function sendSKLogic() {
+    var jsonData = JSON.stringify(metaObject);
+    $.ajax({
+        type: 'POST',
+        url: "/sklearn",
+        data: jsonData,
+        dataType: 'JSON',
+        success: function(result) {
+            console.log("result : " + result);
+        },
+        error: function(xtr, status, error) {
+            console.log(xtr + ": " + status + ": " + error);
+        }
+    })
+}
+
+function putImgToS3(sendObject) {
+    var jsonData = JSON.stringify(sendObject);
+    $.ajax({
+        type: 'POST',
+        url: "/puts3",
+        data: jsonData,
+        dataType: 'JSON',
+        success: function(result) {
+            console.log("result : " + result);
+        },
+        error: function(xtr, status, error) {
+            console.log(xtr + ": " + status + ": " + error);
+        }
+    })
+}
+
 function addClass() {
     classCnt++;
-    metaObject['class3'] = {'id' : classCnt, 'name' : "", 'sampleCnt' : 0, 'imgSrc' : []};
+    metaObject['class' + classCnt] = {
+        'id' : classCnt, 'name' : "Class" + classCnt, 'sampleCnt' : 0, 'imgSrc' : []
+    };
     var trnSec = document.getElementById("train-section");
 
     var newClassCon = document.createElement("div");

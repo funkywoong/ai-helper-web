@@ -12,14 +12,14 @@ PORT_NUMBER = '8080'
 skhandler = SkHandler()
 smhandler = SmHandler()
 
-@app.route('/learning', methods=['POST'])
-def sm_learning():
+@app.route('/puts3', methods=['POST'])
+def put_s3():
     img_meta = request.get_json(force=True)
 
-    __put_s3(img_meta)
-    __call_sm_training()
+    response = __put_s3(img_meta)
+    # __call_sm_training()
 
-    return "hi"
+    return response.text
 
 @app.route('/sklearn', methods=['POST'])
 def sk_learning():
@@ -28,16 +28,13 @@ def sk_learning():
     __call_sk_training(training_meta)
 
 def __put_s3(img_meta):
-    print('in put_s3 function')
     url = 'https://t912mdh9s0.execute-api.ap-northeast-2.amazonaws.com/ab-dev/uploadimg'
     
     myobj = img_meta
     json_val = json.dumps(myobj)
     response = requests.post(url, data=json_val)
-    print(response.text)
-    print(response)
 
-    return response.text
+    return response
 
 def __call_sm_training():
     smhandler.call_sm_training()

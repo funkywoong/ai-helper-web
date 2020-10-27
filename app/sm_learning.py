@@ -6,7 +6,7 @@ import websocket
 class SmHandler():
     def __init__(self):
         self.__sm_client = boto3.client('sagemaker')
-        self.__nb_inst_name = 'ab-nb-ints'
+        self.__nb_inst_name = 'ab-nb-inst'
 
     def call_sm_training(self):
         url = self.__sm_client.create_presigned_notebook_instance_url(NotebookInstanceName=self.__nb_inst_name)['AuthorizedUrl']

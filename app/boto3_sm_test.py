@@ -27,7 +27,8 @@ def call_sm_training():
         origin=http_proto + "//" + http_hn
     )
     
-    ws.send("[ \"stdin\", \"NB_ARGS=hi2 jupyter nbconvert --execute --to notebook --inplace /home/ec2-user/SageMaker/test.ipynb --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=1500\\r\" ]")
+    ws.send("[\"stdin\", \"source activate tensorflow2_p36\\r\"]")
+    ws.send("[\"stdin\", \"jupyter nbconvert --execute --to notebook --inplace /home/ec2-user/SageMaker/custom_training.ipynb --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=1500\\r\" ]")
 
     time.sleep(2)
 
