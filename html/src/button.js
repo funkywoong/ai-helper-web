@@ -5,6 +5,13 @@ var actContainerID = 0;
 
 var actWCFlag = false;
 
+var configObject = {
+    'algorithm' : 'svm',
+    'epochs' : 52,
+    'batch' : 16,
+    'learning_rate' : 0.001
+}
+
 var metaObject = {
     'class1' : {
         'id' : 1,
@@ -173,7 +180,7 @@ function snapShot(contId) {
     // Get class meta
     var tgSampCnt = (++metaObject[tgClass].sampleCnt);
     
-    var fntGathered = document.getElementsByClassName('fnt-gathered-img')[0]
+    var fntGathered = document.getElementsByClassName('fnt-gathered-img')[0];
     fntGathered.innerHTML = "<h4 class=\"fnt-gathered-img\">" + tgSampCnt +" images gathered!</h4>"
     var capBooth = document.getElementsByClassName("capture-booth")[0];
     var video = document.getElementById('myVideo');
@@ -207,6 +214,24 @@ function snapShot(contId) {
     }
 
     putImgToS3(sendObject);
+
+    if (isTrainAble()) {
+        var trn_btn = document.getElementsByClassName("trn-btn-off")[0];
+        trn_btn.removeAttribute('disabled');
+        trn_btn.setAttribute('class', 'trn-btn');
+    }
+
+}
+
+function isTrainAble() {
+    var values = Object.values(metaObject);
+    for (var i=0; i<values.length; i++) {
+        tg_values = values[i]['imgSrc'];
+        if (tg_values.length == 0) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function addImgToCapShowBox(contId, imgDataUrl, tgClass, tgSampCnt) {
@@ -297,4 +322,164 @@ function addClass() {
 
     var addClassBox = document.getElementById("add-class-box");
     trnSec.insertBefore(newClassCon, addClassBox);
+}
+
+function configOn() {
+    var configBox = document.getElementById("advanced-config");
+    configBox.setAttribute('class', 'advanced-config-on');
+
+    // create machine learning content box
+    var mlCfBox = document.createElement("div");
+    mlCfBox.setAttribute('class', 'ml-config');
+
+    var mlCfHeader = document.createElement("div");
+    mlCfHeader.setAttribute('class', 'config-header');
+    mlCfHeader.innerHTML = "<h4 class=\"fnt-config-name\">Machine Learning</h4>";
+
+    var mlCfCBox = document.createElement('div');
+    mlCfCBox.setAttribute('class', 'config-content');
+    var mlCfDesc = document.createElement('div');
+    mlCfDesc.setAttribute('class', 'config-desc');
+    mlCfDesc.innerHTML = "<h4 class=\"fnt-select-opt\">Algorithm : </h4>";
+
+    var mlCfSelect = document.createElement('div');
+    mlCfSelect.setAttribute('class', 'config-select');
+
+    var mlCfSelectBox = document.createElement('select');
+    mlCfSelectBox.setAttribute('style', 'height: 22px;font-size: 12px; width: 150px; border: 1px solid lightgray');
+
+    var mloption = new Array(2);
+    for (var i=0; i<mloption.length; i++) {
+        mloption[i] = document.createElement('option');
+
+        if (i == 0) {
+            mloption[i].setAttribute('value', 'svm');
+            mloption[i].innerHTML = 'SVM';
+        } else if (i == 1) {
+            mloption[i].setAttribute('value', 'tree');
+            mloption[i].innerHTML = "DecisionTree";
+        }
+    }
+
+    // update selected ml option
+    for (var i=0; i<2; i++) {
+        if (mloption[i].value == configObject['algorithm']) {
+            mloption[i].setAttribute('selected', 'selected');
+        }
+        mlCfSelectBox.appendChild(mloption[i]);
+    }
+    mlCfSelect.appendChild(mlCfSelectBox);
+                        
+    mlCfCBox.appendChild(mlCfDesc);
+    mlCfCBox.appendChild(mlCfSelect);
+
+    configBox.appendChild(mlCfHeader);
+    configBox.appendChild(mlCfCBox);
+
+    // separated line between ml and ai
+    var spLine = document.createElement('hr');
+    spLine.setAttribute('style', 'margin-bottom: 5px;margin-top: 10px;border: 1px dotted lightgray');
+    configBox.appendChild(spLine);
+
+    // create deep learning content box
+    var aiCfBox = document.createElement("div");
+    aiCfBox.setAttribute('class', 'ai-config');
+
+    var aiCfHeader = document.createElement('div');
+    aiCfHeader.setAttribute('class', 'config-header');
+    aiCfHeader.innerHTML = "<h4 class=\"fnt-config-name\">Deep Learning</h4>";
+
+    var aiCfEpochBox = document.createElement("div");
+    aiCfEpochBox.setAttribute('class', 'config-content');
+    var aiCfEpochDesc = document.createElement('div');
+    aiCfEpochDesc.setAttribute('class', 'config-desc');
+    aiCfEpochDesc.innerHTML = "<h4 class=\"fnt-select-opt\">Epochs : </h4>";
+    var aiCfEpochInput = document.createElement('div');
+    aiCfEpochInput.setAttribute('class', 'config-select');
+
+    aiCfEpochInputBox = document.createElement('input');
+    aiCfEpochInputBox.setAttribute('name', 'epochs');
+    aiCfEpochInputBox.setAttribute('value', configObject['epochs']);
+    aiCfEpochInputBox.setAttribute('type', 'number');
+    aiCfEpochInputBox.setAttribute('min', '1');
+    aiCfEpochInputBox.setAttribute('max', '200');
+    aiCfEpochInputBox.setAttribute('style', 'height: 16px;font-size: 12px;width: 50px; border: 1px solid lightgray');
+    
+    aiCfEpochInput.appendChild(aiCfEpochInputBox);
+    aiCfEpochBox.appendChild(aiCfEpochDesc);
+    aiCfEpochBox.appendChild(aiCfEpochInput);
+
+    var aiCfBatchBox = document.createElement("div");
+    aiCfBatchBox.setAttribute('class', 'config-content');
+    var aiCfBatchDesc = document.createElement('div');
+    aiCfBatchDesc.setAttribute('class', 'config-desc');
+    aiCfBatchDesc.innerHTML = "<h4 class=\"fnt-select-opt\">Batch Size : </h4>";
+    var aiCfBatchInput = document.createElement('div');
+    aiCfBatchInput.setAttribute('class', 'config-select');
+
+    var aiCfBatchInputSelect = document.createElement('select');
+    aiCfBatchInputSelect.setAttribute('style', 'height: 22px;font-size: 12px;width: 50px; border: 1px solid lightgray');
+    var aibatchoption = new Array(5);
+    for (var i=0; i<aibatchoption.length; i++) {
+        aibatchoption[i] = document.createElement('option');
+        switch(i) {
+            case 0:
+                aibatchoption[i].setAttribute('value', '16');
+                aibatchoption[i].innerHTML = '16';
+                break;
+            case 1:
+                aibatchoption[i].setAttribute('value', '32');
+                aibatchoption[i].innerHTML = '32';
+                break;
+            case 2:
+                aibatchoption[i].setAttribute('value', '64');
+                aibatchoption[i].innerHTML = '64';
+                break;
+            case 3:
+                aibatchoption[i].setAttribute('value', '128');
+                aibatchoption[i].innerHTML = '128';
+                break;
+            case 4:
+                aibatchoption[i].setAttribute('value', '256');
+                aibatchoption[i].innerHTML = '256';
+                break;
+            default:
+                break;
+        }
+        if (aibatchoption[i].value == configObject['batch']) {
+            aibatchoption[i].setAttribute('selected', 'selected');
+        }
+        aiCfBatchInputSelect.appendChild(aibatchoption[i]);
+    }
+
+    aiCfBatchInput.appendChild(aiCfBatchInputSelect);
+    aiCfBatchBox.appendChild(aiCfBatchDesc);
+    aiCfBatchBox.appendChild(aiCfBatchInput);
+
+    var aiCfLRBox = document.createElement("div");
+    aiCfLRBox.setAttribute('class', 'config-content');
+    var aiCfLRDesc = document.createElement('div');
+    aiCfLRDesc.setAttribute('class', 'config-desc');
+    aiCfLRDesc.innerHTML = "<h4 class=\"fnt-select-opt\">Epochs : </h4>";
+    var aiCfLRInput = document.createElement('div');
+    aiCfLRInput.setAttribute('class', 'config-select');
+
+    aiCfLRInputBox = document.createElement('input');
+    aiCfLRInputBox.setAttribute('name', 'learning_rate');
+    aiCfLRInputBox.setAttribute('value', configObject['learning_rate']);
+    aiCfLRInputBox.setAttribute('type', 'number');
+    aiCfLRInputBox.setAttribute('min', '0.00001');
+    aiCfLRInputBox.setAttribute('max', '0.1');
+    aiCfLRInputBox.setAttribute('step', '0.00001');
+    aiCfLRInputBox.setAttribute('style', 'height: 16px;font-size: 12px;width: 50px; border: 1px solid lightgray');
+    
+    aiCfLRInput.appendChild(aiCfLRInputBox);
+    aiCfLRBox.appendChild(aiCfLRDesc);
+    aiCfLRBox.appendChild(aiCfLRInput);
+                            
+    configBox.appendChild(aiCfHeader);
+    configBox.appendChild(aiCfEpochBox);
+    configBox.appendChild(aiCfBatchBox);
+    configBox.appendChild(aiCfLRBox);
+
 }

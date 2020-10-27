@@ -1,18 +1,43 @@
-/* .classes-list {
+.whole-page {
+    width: 100%;
+    /* height: 100%; */
     position: relative;
-    left: 100px;
-    top: 50px;
-    width: 400px;
-    border: 1px solid lightgray;
-} */
+}
+
+.whole-content {
+    /* position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    height: 10%;
+    margin: 10% auto; */
+    margin: 0 auto;
+    display: flex;
+    width: max-content;
+    height: max-content;
+}
+
+.config-box {
+    position: relative;
+    top: 50%; 
+    transform: translate(0, -50%);
+    width: 250px;
+    border: 2px solid lightgray;
+    /* margin-left: 10px; */
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+}
+
+.config-box-header {
+    max-width: 100%;
+
+}
 
 .class-container {
-
-    /* position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%; */
-    /* height: 100%; */
     width: 600px;
     margin: 5px;
     border: 1px solid lightgray;
@@ -28,10 +53,7 @@
 
 .class-header-box {
     max-width: 100%;
-    /* padding: 30px; */
     border: 1px solid lightgray;
-    /* margin: 20px; */
-    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 2.4); */
     -webkit-border-top-left-radius: 10px;
     -moz-border-radius-topleft: 10px;
     -webkit-border-top-right-radius: 10px;
@@ -39,10 +61,8 @@
 }
 .class-content-box {
     max-width: 100%;
-    /* padding: 100px; */
     border: 1px solid lightgray;
     margin: 0px;
-    /* display: inline; */
     -webkit-border-bottom-left-radius: 10px;
     -moz-border-radius-bottomleft: 10px;
     -webkit-border-bottom-right-radius: 10px;
@@ -62,7 +82,7 @@
 .webcam-booth {
     width: 260px;
     height: 300px;
-    background: #D2E6A8;
+    background: #a2a59d;
     border: 1px solid lightgray;
     padding : 10px;
     padding-top: 5px;
@@ -85,12 +105,9 @@
 .capture-booth {
     width: 280px;
     height: 310px;
-    /* max-height: 100%; */
-    /* padding : 10px; */
     padding-top: 0px;
     margin-top: 5px;
     margin-bottom: 10px;
-    /* margin-left: 20px; */
     display: inline-block;
     /* border: 1px solid lightgray; */
 }
@@ -115,10 +132,52 @@
     height: max-content;
 }
 
+.advanced-config-header {
+    margin-top: 0px;
+    width: 100%;
+    display: flex;
+}
+
+.advanced-config-off {
+    width: 100%;
+}
+
+.advanced-config-on {
+    
+}
+
+.ml-config {
+    width: 100%;
+    height: max-content;
+}
+
+.ai-config {
+    width: 100%;
+    height: max-content;
+}
+
+.config-header {
+    width: 100%;
+}
+
+.config-content {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.config-desc {
+
+}
+
+.config-select {
+    margin-top: 0px;
+    margin-left: 10px;
+}
+
+
 button.web-cam-box {
     width: 100px;
     height: 80px;
-    /* max-width: 100%; */
     border: 1px solid lightgray;
     padding : 10px;
     margin-top: 5px;
@@ -127,7 +186,6 @@ button.web-cam-box {
     margin-right: 10px;
     background-color: #D2E6A8;
     background-blend-mode: screen;
-    /* opacity: 0.5; */
     -webkit-border-top-left-radius: 10px;
     -moz-border-radius-topleft: 10px;
     -webkit-border-top-right-radius: 10px;
@@ -188,6 +246,55 @@ button.exit-button {
     border: none;
     padding: 0px;
 }
+
+button.trn-btn {
+    width: 240px;
+    height: 50px;
+    border: 0px;
+    margin: 5px;
+    background: #D2E6A8;
+    vertical-align: middle;
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    /* margin: 5px; */
+}
+
+button.trn-btn-off {
+    width: 240px;
+    height: 50px;
+    border: 0px;
+    margin: 5px;
+    vertical-align: middle;
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    -moz-border-radius-bottomright: 10px;
+    /* margin: 5px; */
+}
+
+button.advanced-btn {
+    width: max-content;
+    height: max-content;
+    background: None;
+    border: None;
+    position: relative;
+    margin-top: 10px;
+    margin-left: 120px;
+    /* position: relative;
+    top: 50%; 
+    transform: translate(0, -50%); */
+}
+
 
 canvas.capture-video {
     width: 520px;
