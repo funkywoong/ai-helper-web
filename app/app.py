@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request
 from sk_learning import SkHandler
-from boto3_test import put_object_test
-import requests, json, sys
+from sm_learning import SmHandler
+import json, sys, time
+import requests
 
 app = Flask(__name__)
 
@@ -9,54 +10,42 @@ HOST_ADDRESSS = '0.0.0.0'
 PORT_NUMBER = '8080'
 
 skhandler = SkHandler()
+smhandler = SmHandler()
 
 @app.route('/learning', methods=['POST'])
-def learning():
-    training_meta = request.get_json(force=True)
+def sm_learning():
+    img_meta = request.get_json(force=True)
 
-    # skhandler.construct(training_meta)
-    # skhandler.training_test()
-    # print(type(training_meta))
-    # print(training_meta)
-
-    put_s3(training_meta)
-    # numpyTest(training_meta)
-    # put_object_test(training_meta)
+    __put_s3(img_meta)
+    __call_sm_training()
 
     return "hi"
 
-{
-    'class1' : {
-        'id' : 1,
-        'name' : "Class1",
-        'sampleCnt' : 0,
-        'capShowHTML': null,
-        'gatBoxHTML' : null,
-        'imgSrc': []
-    },
-    'class2' : {
-        'id' : 2,
-        'name' : "Class2",
-        'sampleCnt' : 0,
-        "capShowHTML": null,
-        "gatBoxHTML": null,
-        'imgSrc': []
-    }
-}
+@app.route('/sklearn', methods=['POST'])
+def sk_learning():
+    training_meta = request.get_json(force=True)
 
-def put_s3(training_meta):
-    print('in')
+    __call_sk_training(training_meta)
+
+def __put_s3(img_meta):
+    print('in put_s3 function')
     url = 'https://t912mdh9s0.execute-api.ap-northeast-2.amazonaws.com/ab-dev/uploadimg'
-    print(len(training_meta.values().values()['imgSrc']))
     
-    print('size : ', size)
-    myobj = training_meta
-    # header = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+    myobj = img_meta
     json_val = json.dumps(myobj)
     response = requests.post(url, data=json_val)
     print(response.text)
+    print(response)
 
     return response.text
+
+def __call_sm_training():
+    smhandler.call_sm_training()
+
+def __call_sk_training(training_meta):
+    skhandler.construct(training_meta)
+    skhandler.training_test()
+
 
 if __name__ == '__main__':
     app.run(HOST_ADDRESSS, PORT_NUMBER)
