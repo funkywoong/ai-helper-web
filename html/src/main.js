@@ -7,7 +7,7 @@ var actWCFlag = false;
 
 var configObject = {
     'algorithm' : 'svm',
-    'epochs' : 52,
+    'epochs' : 50,
     'batch' : 16,
     'learning_rate' : 0.001
 }
@@ -32,7 +32,6 @@ var metaObject = {
 }
 
 function webcamStart(contId) {
-    // ajaxTest();
 
     var targetCBox = document.getElementsByClassName("class-content-box")[contId-1];
     var cBoxChildList = targetCBox.childNodes;
@@ -247,8 +246,13 @@ function addImgToCapShowBox(contId, imgDataUrl, tgClass, tgSampCnt) {
     }
 }
 
+function trainModel() {
+    sendSKLogic();
+    sendSMLogic();
+}
+
 function sendSKLogic() {
-    var jsonData = JSON.stringify(metaObject);
+    var jsonData = JSON.stringify(configObject);
     $.ajax({
         type: 'POST',
         url: "/sklearn",
@@ -256,6 +260,22 @@ function sendSKLogic() {
         dataType: 'JSON',
         success: function(result) {
             console.log("result : " + result);
+        },
+        error: function(xtr, status, error) {
+            console.log(xtr + ": " + status + ": " + error);
+        }
+    })
+}
+
+function sendSMLogic() {
+    var jsonData = JSON.stringify(configObject);
+    $.ajax({
+        type: 'POST',
+        url: "/smlearn",
+        data: jsonData,
+        dataType: 'JSON',
+        success: function(result) {
+            console.log("result : ", result);
         },
         error: function(xtr, status, error) {
             console.log(xtr + ": " + status + ": " + error);
@@ -324,7 +344,66 @@ function addClass() {
     trnSec.insertBefore(newClassCon, addClassBox);
 }
 
+function configBtnChange() {
+    var configHeader = document.getElementsByClassName('advanced-config-header')[0];
+    configHeader.innerHTML = "";
+    
+    var newConfigHeaderDesc = document.createElement('h4');
+    newConfigHeaderDesc.setAttribute('class', 'fnt-advanced');
+    newConfigHeaderDesc.setAttribute('style', 'color: green');
+    newConfigHeaderDesc.innerHTML = 'Advanced';
+
+    var newConfigHeaderBtn = document.createElement('button');
+    newConfigHeaderBtn.setAttribute('class', 'advanced-btn');
+    newConfigHeaderBtn.setAttribute('onclick', 'configOff();');
+    newConfigHeaderBtn.innerHTML = "<svg id=\"up-arrow-icon\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"10\" viewBox=\"0 0 16 10\" fill=\"none\">\n\t"
+                                + "<path fill=\"green\" d=\"M1.41 0.590088L0 2.00009L8 10.0001L16 2.00009L14.59 0.590088L8 7.170093\" transform=\"rotate(180)\" transform-origin=\"50% 50%\"></path>"
+                                + "</svg>";
+
+    configHeader.appendChild(newConfigHeaderDesc);
+    configHeader.appendChild(newConfigHeaderBtn);
+}
+
+function updateConfigObj() {
+    configObject['algorithm'] = document.getElementById('ml-algorithm').value;
+    configObject['epochs'] = document.getElementById('ai-epochs').value;
+    configObject['batch'] = document.getElementById('ai-batch').value;
+    configObject['learning_rate'] = document.getElementById('ai-learningrate').value;
+}
+
+function configOff() {
+
+    updateConfigObj();
+
+    var configBox = document.getElementById("advanced-config");
+    configBox.setAttribute('class', 'advanced-config-off');
+    configBox.innerHTML = "";
+
+    var configHeader = document.createElement('div');
+    configHeader.setAttribute('class', 'advanced-config-header');
+    configHeader.setAttribute('id', 'advanced-config-header');
+
+    var configHeaderDesc = document.createElement('h4');
+    configHeaderDesc.setAttribute('class', 'fnt-advanced');
+    configHeaderDesc.innerHTML = "Advanced";
+
+    var configHeaderBtn = document.createElement('button');
+    configHeaderBtn.setAttribute('class', 'advanced-btn');
+    configHeaderBtn.setAttribute('role', 'button');
+    configHeaderBtn.setAttribute('onclick', 'configOn();');
+    configHeaderBtn.innerHTML = "<svg id=\"down-arrow-icon\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"10\" viewBox=\"0 0 16 10\" fill=\"none\">\n\t"
+                            + "<path fill=\"#9AA0A6\" d=\"M1.41 0.590088L0 2.00009L8 10.0001L16 2.00009L14.59 0.590088L8 7.170093\"></path>"
+                            + "</svg>";
+
+    configHeader.appendChild(configHeaderDesc);
+    configHeader.appendChild(configHeaderBtn);
+
+    configBox.appendChild(configHeader);
+}
+
 function configOn() {
+    configBtnChange();
+
     var configBox = document.getElementById("advanced-config");
     configBox.setAttribute('class', 'advanced-config-on');
 
@@ -346,6 +425,7 @@ function configOn() {
     mlCfSelect.setAttribute('class', 'config-select');
 
     var mlCfSelectBox = document.createElement('select');
+    mlCfSelectBox.setAttribute('id', 'ml-algorithm');
     mlCfSelectBox.setAttribute('style', 'height: 22px;font-size: 12px; width: 150px; border: 1px solid lightgray');
 
     var mloption = new Array(2);
@@ -398,6 +478,7 @@ function configOn() {
     aiCfEpochInput.setAttribute('class', 'config-select');
 
     aiCfEpochInputBox = document.createElement('input');
+    aiCfEpochInputBox.setAttribute('id', 'ai-epochs');
     aiCfEpochInputBox.setAttribute('name', 'epochs');
     aiCfEpochInputBox.setAttribute('value', configObject['epochs']);
     aiCfEpochInputBox.setAttribute('type', 'number');
@@ -418,6 +499,7 @@ function configOn() {
     aiCfBatchInput.setAttribute('class', 'config-select');
 
     var aiCfBatchInputSelect = document.createElement('select');
+    aiCfBatchInputSelect.setAttribute('id', 'ai-batch');
     aiCfBatchInputSelect.setAttribute('style', 'height: 22px;font-size: 12px;width: 50px; border: 1px solid lightgray');
     var aibatchoption = new Array(5);
     for (var i=0; i<aibatchoption.length; i++) {
@@ -460,11 +542,12 @@ function configOn() {
     aiCfLRBox.setAttribute('class', 'config-content');
     var aiCfLRDesc = document.createElement('div');
     aiCfLRDesc.setAttribute('class', 'config-desc');
-    aiCfLRDesc.innerHTML = "<h4 class=\"fnt-select-opt\">Epochs : </h4>";
+    aiCfLRDesc.innerHTML = "<h4 class=\"fnt-select-opt\">Learning Rate : </h4>";
     var aiCfLRInput = document.createElement('div');
     aiCfLRInput.setAttribute('class', 'config-select');
 
     aiCfLRInputBox = document.createElement('input');
+    aiCfLRInputBox.setAttribute('id', 'ai-learningrate');
     aiCfLRInputBox.setAttribute('name', 'learning_rate');
     aiCfLRInputBox.setAttribute('value', configObject['learning_rate']);
     aiCfLRInputBox.setAttribute('type', 'number');

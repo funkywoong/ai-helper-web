@@ -82,7 +82,7 @@
 .webcam-booth {
     width: 260px;
     height: 300px;
-    background: #a2a59d;
+    background: #D2E6A8;
     border: 1px solid lightgray;
     padding : 10px;
     padding-top: 5px;
@@ -133,7 +133,8 @@
 }
 
 .advanced-config-header {
-    margin-top: 0px;
+    margin-top: 5px;
+    margin-bottom: 10px;
     width: 100%;
     display: flex;
 }
@@ -315,3 +316,8 @@ img.sample-img {
     -webkit-border-bottom-right-radius: 10px;
     -moz-border-radius-bottomright: 10px;
 }
+
+/* svg #up-arrow-icon{
+    transform: rotate(180);
+    transform-origin: 50%, 50%;
+} */
