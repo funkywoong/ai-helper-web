@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from sk_learning import SkHandler
 from sm_learning import SmHandler
+from learning import TrainHandler
 import json, sys, time
 import requests
 
@@ -11,6 +12,7 @@ PORT_NUMBER = '8080'
 
 skhandler = SkHandler()
 smhandler = SmHandler()
+train_handler = TrainHandler()
 
 @app.route('/puts3', methods=['POST'])
 def put_s3():
@@ -21,11 +23,12 @@ def put_s3():
 
     return response.text
 
-@app.route('/sklearn', methods=['POST'])
-def sk_learning():
+@app.route('/learning', methods=['POST'])
+def learning():
     training_meta = request.get_json(force=True)
+    print(training_meta)
 
-    __call_sk_training(training_meta)
+    __call_learning(training_meta)
 
 def __put_s3(img_meta):
     url = 'https://t912mdh9s0.execute-api.ap-northeast-2.amazonaws.com/ab-dev/uploadimg'
@@ -36,13 +39,8 @@ def __put_s3(img_meta):
 
     return response
 
-def __call_sm_training():
-    smhandler.call_sm_training()
-
-def __call_sk_training(training_meta):
-    skhandler.construct(training_meta)
-    skhandler.training_test()
-
+def __call_learning(training_meta):
+    train_handler.call_train_logic(training_meta)
 
 if __name__ == '__main__':
     app.run(HOST_ADDRESSS, PORT_NUMBER)

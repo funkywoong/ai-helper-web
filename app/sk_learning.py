@@ -44,8 +44,9 @@ class SkHandler():
 
         self.file_cnt = 0
 
-    def construct(self, training_meta):
-        
+    def construct(self, whole_meta):
+        keys = [key for key in whole_meta.keys() if 'Class' in key]
+        print(keys)
         cls_names = []
         cls_img_list = []
 

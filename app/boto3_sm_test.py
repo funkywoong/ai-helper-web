@@ -4,7 +4,9 @@ import requests
 import websocket
 # from websock.web import websocket
 # from botocore.vendored import requests
-
+BASE_CMD = "[\"stdin\", \"" \
+            + "jupyter nbconvert --execute --to notebook --inplace /home/ec2-user/SageMaker/{}.ipynb " \
+            + "--ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=1500\\r\"]"
 
 # def lambda_handler(event, context):
 def call_sm_training():
@@ -26,10 +28,22 @@ def call_sm_training():
         host=http_hn,
         origin=http_proto + "//" + http_hn
     )
-    
-    ws.send("[\"stdin\", \"source activate tensorflow2_p36\\r\"]")
-    ws.send("[\"stdin\", \"jupyter nbconvert --execute --to notebook --inplace /home/ec2-user/SageMaker/custom_training.ipynb --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=1500\\r\" ]")
+    test1 = BASE_CMD.format('svm', '50', '', '', '', 'test')
+    test2 = BASE_CMD.format('', '', '124', '0.001', 'data', 'ai_training')
+    test3 = BASE_CMD.format('ai_training')
+    print(test3)
 
+    # ws.send("[\"stdin\", \"source activate tensorflow2_p36\\r\"]")
+    # ws.send(test1)
+    # ws.send(test3)
+
+    tmp = '50'
+    int_tmp = int(tmp)
+    print(type(int_tmp))
+
+    tmp_f = '50.5'
+    flot_tmp_f = float(tmp_f)
+    print(type(flot_tmp_f))
     time.sleep(2)
 
     ws.close()
