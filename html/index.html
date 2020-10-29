@@ -153,7 +153,7 @@
         <div id="param-section" style="width: max-content">
           <div class="config-box">
             <p class="fnt-class-name">Training</p>
-            <button class="trn-btn-off" role="button" onclick="putImgToS3();" disabled="disabled">
+            <button class="trn-btn-off" role="button" onclick="trainModel();" disabled="disabled">
               <h4 class="fnt-trn">Train Model</h4>
             </button>
             <hr style="margin-bottom: 5px;margin-top: 5px;border: 1px solid lightgray"\>
@@ -168,6 +168,10 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class='textbox'>
+          <input type="text" id="test-name" name="name" required minlength="4" maxlength="8" size="10", value=''>
+          <input type='button' id='test-btn' value='submit' onclick="userBtnTest();">
         </div>
       </div>
     </div>

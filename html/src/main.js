@@ -6,6 +6,7 @@ var actContainerID = 0;
 var actWCFlag = false;
 
 var configObject = {
+    'user' : '',
     'algorithm' : 'svm',
     'epochs' : 50,
     'batch' : 16,
@@ -29,6 +30,11 @@ var metaObject = {
         "gatBoxHTML": null,
         'imgSrc': []
     }
+}
+
+function userBtnTest() {
+    configObject['user'] = document.getElementById('test-name').value;
+    console.log(configObject);
 }
 
 function webcamStart(contId) {
@@ -206,6 +212,7 @@ function snapShot(contId) {
     capBooth.appendChild(tmpImg);
 
     var sendObject = {
+        'user' : configObject['user'],
         'class': tgClass,
         'name' : metaObject[tgClass].name,
         'imgId': tgSampCnt,
@@ -215,11 +222,13 @@ function snapShot(contId) {
     putImgToS3(sendObject);
 
     if (isTrainAble()) {
-        var trn_btn = document.getElementsByClassName("trn-btn-off")[0];
-        trn_btn.removeAttribute('disabled');
-        trn_btn.setAttribute('class', 'trn-btn');
+        var trn_btn = document.getElementsByClassName("trn-btn-off")[0] 
+            || document.getElementsByClassName("trn-btn")[0];
+        if (trn_btn.hasAttribute('disabled')) {
+            trn_btn.removeAttribute('disabled');
+            trn_btn.setAttribute('class', 'trn-btn');
+        }
     }
-
 }
 
 function isTrainAble() {
@@ -247,12 +256,17 @@ function addImgToCapShowBox(contId, imgDataUrl, tgClass, tgSampCnt) {
 }
 
 function trainModel() {
-    sendSKLogic();
-    sendSMLogic();
+    
+    updateConfigObj();
+    
+    console.log('in train model method')
+
+    callLearning();
 }
 
 function sendSKLogic() {
-    var jsonData = JSON.stringify(configObject);
+    var wholeMeta = Object.assign(configObject, metaObject)
+    var jsonData = JSON.stringify(wholeMeta);
     $.ajax({
         type: 'POST',
         url: "/sklearn",
@@ -267,11 +281,11 @@ function sendSKLogic() {
     })
 }
 
-function sendSMLogic() {
+function callLearning() {
     var jsonData = JSON.stringify(configObject);
     $.ajax({
         type: 'POST',
-        url: "/smlearn",
+        url: "/learning",
         data: jsonData,
         dataType: 'JSON',
         success: function(result) {
@@ -365,10 +379,15 @@ function configBtnChange() {
 }
 
 function updateConfigObj() {
-    configObject['algorithm'] = document.getElementById('ml-algorithm').value;
-    configObject['epochs'] = document.getElementById('ai-epochs').value;
-    configObject['batch'] = document.getElementById('ai-batch').value;
-    configObject['learning_rate'] = document.getElementById('ai-learningrate').value;
+    try {
+        configObject['algorithm'] = document.getElementById('ml-algorithm').value;
+        configObject['epochs'] = document.getElementById('ai-epochs').value;
+        configObject['batch'] = document.getElementById('ai-batch').value;
+        configObject['learning_rate'] = document.getElementById('ai-learningrate').value;
+    } catch(e) {
+        return
+    }
+
 }
 
 function configOff() {
