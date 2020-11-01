@@ -14,7 +14,7 @@ class TrainHandler():
         self.__nb_inst_ml_name = 'ab-nb-inst-ml'
 
     def call_train_logic(self, training_meta):
-        sm_client = boto3.client('sagemaker')
+        sm_client = boto3.client('sagemaker', region_name='ap-northeast-2')
 
         usr_name = training_meta['user']
         ml_algorithm = training_meta['algorithm']
