@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request
-from learning import TrainHandler
 import json, sys, time
 import requests
+
+from learning import TrainHandler
+from inference import inferencing
 
 app = Flask(__name__)
 
@@ -36,7 +38,11 @@ def learning():
 @app.route('/inference', methods=['POST'])
 def inference():
     print('in inference')
+
     inference_meta = request.get_json(force=True)
+    response = inferencing(inference_meta)
+
+    return response
 
 def __is_train_complete(training_meta):
     url = 'https://t912mdh9s0.execute-api.ap-northeast-2.amazonaws.com/ab-dev/traincomplete'

@@ -1,6 +1,7 @@
 import boto3  # AWS S3 접근용
 from botocore.exceptions import ClientError
-import sys, os
+import sys, os, json
+import base64
 import pickle
 from io import BytesIO
 from PIL import Image
@@ -33,15 +34,15 @@ def down_dl_model(usr):
 
     # dl_model = s3_resource.Object(BUCKET_NAME, model_key).get()['Body'].read()
     tmp_model_name = 'tmp_{}_model.h5'.format(usr)
-    try:
-        s3_resource.Bucket(BUCKET_NAME).download_file(model_key, tmp_model_name)
-    except ClientError as e:
-        print(e)
+    # try:
+    s3_resource.Bucket(BUCKET_NAME).download_file(model_key, tmp_model_name)
+    # except ClientError as e:
+        # print('s3 error')
+        # print(e)
     
     dl_model = load_model(tmp_model_name)
-    dl_model.summary()
 
-    os.remove(tmp_model_name)
+    # os.remove(tmp_model_name)
 
     dl_label = s3_resource.Object(BUCKET_NAME, label_key).get()['Body'].read().decode('utf-8')
     dl_label = parse_label_txt(dl_label)
@@ -97,41 +98,49 @@ def dl_predict(dl_model, dl_label, tar_img):
         'type': 'deep-learning',
         'result': {}
     }
+    print(dl_label)
     print(pred_val)
-
     for index in range(0, len(dl_label)):
         result_obj['result'][dl_label[index]] = round(pred_val[0][index] * 100, 2)
 
     return result_obj
 
 def down_tmp_img(usr):
-    tmp_img = s3_resource.Object(BUCKET_NAME, 'peter/data/Class2_1.png')
+    tmp_img = s3_resource.Object(BUCKET_NAME, 'test3/data/Class2_1.png')
     tmp_img = BytesIO(tmp_img.get()['Body'].read())
     decoded_tmp_img = np.array(Image.open(tmp_img).convert("RGB")).astype(np.float16)
 
-    print(decoded_tmp_img.shape)
-
     return decoded_tmp_img
 
-def tmp_handler(event):
-    usr = event['user']
+def decoding_img(data_uri):
+    encoded_img_b64 = data_uri.split(',')[1]
+    tmp_decoded_img = BytesIO(base64.b64decode(encoded_img_b64))
+    decoded_img = np.array(Image.open(tmp_decoded_img).convert("RGB")).astype(np.float16)
+    # print(decoded_img)
+    
+    # return numpy array
+    return decoded_img
 
-    decoded_tmp_img = down_tmp_img(usr)
+def inferencing(event):
+    usr = event['user']
+    img_uri = event['imgSrc']
+    # print(img_uri)
+    # decoded_tmp_img = down_tmp_img(usr)
+    tar_img = decoding_img(img_uri)
     
     dl_model, dl_label = down_dl_model(usr)
     ml_model, ml_label = down_ml_model(usr)
 
-    ml_result = ml_predict(ml_model, ml_label, decoded_tmp_img)
-    dl_result = dl_predict(dl_model, dl_label, decoded_tmp_img)
+    ml_result = ml_predict(ml_model, ml_label, tar_img)
+    dl_result = dl_predict(dl_model, dl_label, tar_img)
 
-    return {
-        'status' : 200,
-        'message' : {
+    response = {
+        'statusCode' : 200,
+        'message' : json.dumps({
             ml_result['type'] : ml_result['result'], 
             dl_result['type'] : dl_result['result']
-        }
+        })
     }
+    print(response)
 
-
-# if __name__ == '__main__':
-#     print(tmp_handler(test_event))
+    return response

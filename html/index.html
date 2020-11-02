@@ -5,6 +5,9 @@
     <meta charset="utf-8" \ />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" \ />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> 
+    <script>
+      var userName = prompt("What is your name", "name");
+    </script>
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
       rel="stylesheet"
@@ -84,9 +87,9 @@
       }
       h4.fnt-config-name {
         font-size: 16px;
-        margin-top: 5px;
+        margin-top: 10px;
         margin-left: 10px;
-        margin-bottom:15px;
+        margin-bottom:10px;
         font-weight: bold;
         color: #404040;
       }
@@ -94,15 +97,60 @@
         font-size: 14px;
         margin-top: 2px;
         margin-bottom: 5px;
-        margin-left: 10px;
+        margin-left: 20px;
         font-weight: bold;
         color: #404040;
+      }
+      h4.fnt-inf-off {
+        font-size: 15px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 15px;
+        margin-right: 15px;
+        font-weight: bold;
+        color: #7f7f7f;
+      }
+      h4.fnt-inf-class {
+        font-size: 15px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        margin-left: 5px;
+        font-weight: bold;
+        color: #404040;
+      }
+      h4.fnt-percentage {
+        position: relative;
+        top: 50%; 
+        transform: translate(0, -50%);
+        margin-top: 0px;
+        margin-bottom: 0px;
+        font-size: 14px;
+        font-weight: 900;
+        color: #404040;
+      }
+      h4.fnt-ai-percentage {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        position: relative;
+        top: 50%;
+        transform: translate(0, -50%);
+        /* left: 50%; */
+        font-weight: 900;
+        font-size: 14px;
+        color: #404040;
+        /* z-index: 1; */
+      }
+      h4.fnt-inf {
+        margin: 0px;
+        vertical-align: middle;
+        font-size: 18px;
+        color: #7f7f7f;
       }
     </style>
   </head>
   <body>
-    <header style="height: 150px">
-      <h1>AI helper</h1>
+    <header id='header' style="height: 150px">
+      <h1><script>document.write(userName);</script>'s AI helper</h1>
       <b>Let's gather your own images and train them!</b>
       <hr />
     </header>
@@ -149,12 +197,26 @@
             </svg>
             Add a class
           </button>
-        </div>          
+        </div>
+        <div id="connect-section" style="width: max-content">
+          <div class="connect-icon">
+            <?xml version="1.0" encoding="iso-8859-1"?>
+            <!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+            <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+            <?xml version="1.0" encoding="UTF-8"?>
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="10pt" height="15pt" viewBox="0 0 10 15" version="1.1">
+              <g id="surface1">
+                <path style=" stroke:none;fill-rule:nonzero;fill:lightgray;fill-opacity:1;" d="M 8.59375 6.550781 L 1.914062 0.171875 C 1.515625 -0.144531 1.0625 -0.109375 1.0625 1.023438 L 1.0625 13.582031 C 1.0625 14.621094 1.546875 14.785156 1.914062 14.433594 L 8.601562 8.054688 C 8.871094 7.640625 8.871094 6.964844 8.59375 6.550781 Z M 8.59375 6.550781 "/>
+              </g>
+            </svg>
+          </div>
+        </div>
         <div id="param-section" style="width: max-content">
           <div class="config-box">
             <p class="fnt-class-name">Training</p>
             <button class="trn-btn-off" role="button" onclick="trainModel();" disabled="disabled">
-              <h4 class="fnt-trn">Train Model</h4>
+              <h4 class="fnt-trn" style="display:block;">Train Model</h4>
+              <div class="loader" id="trn-loader" style="display:none; margin-top: 1px"></div>
             </button>
             <hr style="margin-bottom: 5px;margin-top: 5px;border: 1px solid lightgray"\>
             <div class="advanced-config-off" id="advanced-config" role="button">
@@ -169,12 +231,44 @@
             </div>
           </div>
         </div>
-        <div class='textbox'>
-          <input type="text" id="test-name" name="name" required minlength="4" maxlength="8" size="10", value=''>
-          <input type='button' id='test-btn' value='submit' onclick="userBtnTest();">
+        <div id="connect-section" style="width: max-content">
+          <div class="connect-icon">
+            <?xml version="1.0" encoding="iso-8859-1"?>
+            <!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+            <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+            <?xml version="1.0" encoding="UTF-8"?>
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="10pt" height="15pt" viewBox="0 0 10 15" version="1.1">
+              <g id="surface1">
+                <path style=" stroke:none;fill-rule:nonzero;fill:lightgray;fill-opacity:1;" d="M 8.59375 6.550781 L 1.914062 0.171875 C 1.515625 -0.144531 1.0625 -0.109375 1.0625 1.023438 L 1.0625 13.582031 C 1.0625 14.621094 1.546875 14.785156 1.914062 14.433594 L 8.601562 8.054688 C 8.871094 7.640625 8.871094 6.964844 8.59375 6.550781 Z M 8.59375 6.550781 "/>
+              </g>
+            </svg>
+          </div>
         </div>
+        <div id="inf-section" style="width: max-content">
+          <div class="inf-box">
+            <p class='fnt-class-name'>Inference</p>
+            <hr style="margin-bottom: 5px; margin-top: 5px; border: 1px solid lightgray" \>
+            <div class="inference-off" id="inference-off">
+              <h4 class='fnt-inf-off'>You must train a model on the left before you can preview it here</h4>
+            </div>
+            <div class="inference-on" id="inference-on" style="display: none"></div>
+          </div>
+        </div>
+        <script>
+          var obj = {
+            'machine-learning' : {
+              'Class1': 0, 'Class2': 1
+            },
+            'deep-learning' : {
+              'Class1': 40.23, 'Class2': 59.77
+            }
+          }
+        </script>
       </div>
     </div>
     <script type="text/javascript" src="./src/main.js"></script>
+    <script>
+      getUserInfo();
+    </script>
   </body>
 </html>

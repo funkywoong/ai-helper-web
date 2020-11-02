@@ -130,3 +130,6 @@ dmypy.json
 
 # test file
 *_test.*
+
+# temp model file
+*.h5

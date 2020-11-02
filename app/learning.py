@@ -10,7 +10,7 @@ BASE_CMD = "[\"stdin\", \"NB_ARGS_ALGO={} NB_ARGS_EPOC={} NB_ARGS_BATCH={} NB_AR
 
 class TrainHandler():
     def __init__(self):
-        self.__nb_inst_name = 'ab-nb-inst'
+        self.__nb_inst_name = 'ab-nb-inst-dl'
         self.__nb_inst_ml_name = 'ab-nb-inst-ml'
 
     def call_train_logic(self, training_meta):
@@ -29,6 +29,9 @@ class TrainHandler():
 
         ws = self.__init_ws(sm_client, self.__nb_inst_name)
         AI_CMD = BASE_CMD.format("", ai_epochs, ai_batch, ai_learning_rate, usr_name, 'ai_training')
+
+        # source activate tensorflow2_p36 conda virtual environment
+        ws.send(CONDA_EXC_CMD)
 
         # execute deep learning logic
         ws.send(AI_CMD)

@@ -4,6 +4,7 @@ var glbtmpHTML = "";
 var actContainerID = 0;
 
 var actWCFlag = false;
+var infFlag = false;
 
 var configObject = {
     'user' : '',
@@ -30,6 +31,12 @@ var metaObject = {
         "gatBoxHTML": null,
         'imgSrc': []
     }
+}
+
+function getUserInfo() {
+    var headerText = document.getElementById('header').innerText;
+
+    configObject['user'] = headerText.split('\'')[0];
 }
 
 function userBtnTest() {
@@ -104,6 +111,7 @@ function isFirstTry(tmpHTML) {
 }
 
 function streamVideo() {
+
     var video = document.getElementById('myVideo');
 
     navigator.getMedia = navigator.getUserMedia ||
@@ -231,6 +239,28 @@ function snapShot(contId) {
     }
 }
 
+function infSnapShot() {
+    var video = document.getElementById('myVideo');
+
+    var captureVideo = document.createElement("canvas");
+    captureVideo.setAttribute("class", "capture-video");
+    captureVideo.setAttribute("width", "640");
+    captureVideo.setAttribute("height", "480");
+
+    var ctx = captureVideo.getContext('2d');
+
+    ctx.drawImage(video, 0, 0, 640, 480, 0, 0, 640, 480);
+    
+    var imgDataUrl = captureVideo.toDataURL('image/png');
+
+    var sendObject = {
+        'user' : configObject['user'],
+        'imgSrc' : imgDataUrl
+    }
+
+    callInference(sendObject);
+}
+
 function isTrainAble() {
     var values = Object.values(metaObject);
     for (var i=0; i<values.length; i++) {
@@ -258,22 +288,232 @@ function addImgToCapShowBox(contId, imgDataUrl, tgClass, tgSampCnt) {
 function trainModel() {
     
     updateConfigObj();
+    configOff();
+
+    var _showLoad = function() {
+        console.log('_showLoad');
+        var loader = $("#trn-loader");
+        var text = $("h4.fnt-trn");
+
+        text.css("display", "none");
+        loader.css("display", "block");
+
+        var trnBtn = $("button.trn-btn") || $("button.trn-btn-off");
+        trnBtn.attr('disabled', 'disabled')
+    }();
+
+    var _noShowInfView = function () {
+        var infRes = $('div.inference-result');
+        console.log(infRes);
+        if (infRes != undefined) {
+            infRes.attr('style', 'display:none');
+        }
+    }();
     
     console.log('in train model method')
+
+    if (actWCFlag) {
+        actWebcamEnd(actContainerID);
+    }
 
     callLearning();
 }
 
-function sendSKLogic() {
-    var wholeMeta = Object.assign(configObject, metaObject)
-    var jsonData = JSON.stringify(wholeMeta);
+function inferenceView() {
+    var infOffBox = document.getElementById('inference-off');
+    infOffBox.setAttribute('style', 'display:none;');
+
+    var infOnBox = document.getElementById('inference-on');
+    infOnBox.removeAttribute('style');
+    infOnBox.innerHTML = "";
+
+    // DOM element for inferencing video
+    var infVideo = document.createElement('video');
+    infVideo.setAttribute('autoplay', 'true');
+    infVideo.setAttribute('id', 'myVideo');
+    infVideo.setAttribute('style', 'width: 280px; margin-top: 15px; margin-left:20px; margin-right:20px; margin-bottom: 10px; \
+        -webkit-border-top-left-radius: 10px; -moz-border-radius-topleft: 10px; -webkit-border-top-right-radius: 10px; \
+        -moz-border-radius-topright: 10px; -webkit-border-bottom-left-radius: 10px; -moz-border-radius-bottomleft: 10px;\
+        -webkit-border-bottom-right-radius: 10px; -moz-border-radius-bottomright: 10px;')
+    infVideo.setAttribute('width', '260px');
+
+    var infCapBtn = document.createElement('button');
+    infCapBtn.setAttribute('role', 'button');
+    infCapBtn.setAttribute('class', 'inf-capture-box');
+    infCapBtn.setAttribute('onclick', 'infSnapShot();');
+    infCapBtn.innerHTML = '<h4 class=\"fnt-inf\">Capture and Infer it!</h4>';
+    infCapBtn.innerHTML += '<div class=\"loader\" id=\"inf-loader\" style=\"display:none; margin-top: 1px\"></div>';
+
+    infOnBox.appendChild(infVideo);
+    infOnBox.appendChild(infCapBtn);
+
+    streamVideo();
+}
+
+function updateBar(resultObject) {
+    var clsNumber = Object.keys(resultObject['machine-learning']).length;
+    var infOnBox = document.getElementById('inference-on');
+
+    if (document.getElementById('inference-result') == undefined) {
+        var infResBox = document.createElement('div');
+        infResBox.setAttribute('class', 'inference-result');
+        infResBox.setAttribute('id', 'inference-result');
+    } else {
+        var infResBox = document.getElementById('inference-result');
+        infResBox.innerHTML = "";
+    }
+
+    var line = document.createElement('hr');
+    line.setAttribute('style', 'margin-bottom: 5px; margin-top: 5px; border: 1px solid lightgray');
+
+    var mlResBox = document.createElement('div');
+    mlResBox.appendChild(line);
+    mlResBox.setAttribute('class', 'inferece-ml-result-header');
+    mlResBox.setAttribute('style', 'width: 100%; overflow: hidden');
+    mlResBox.innerHTML += "<h4 class=\"fnt-config-name\">Machine Learning</h4>";
+
+    ml_divs = new Array(clsNumber);
+    for (var i=0; i<clsNumber; i++) {
+        ml_divs[i] = document.createElement('div');
+        ml_divs[i].setAttribute('class', 'class-accuracy-box');
+
+        var tmpClsName = document.createElement('div');
+        tmpClsName.setAttribute('class', 'class-name');
+        tmpClsName.innerHTML = "<h4 class=\"fnt-inf-class\">" + Object.keys(resultObject['machine-learning'])[i] + " : </h4>";
+
+        ml_divs[i].appendChild(tmpClsName);
+
+        var tmpClsBar = document.createElement('div');
+        tmpClsBar.setAttribute('class', 'class-bar');
+
+        var classBar = document.createElement('div');
+        console.log(Object.values(resultObject['machine-learning'])[i]);
+        if (Object.values(resultObject['machine-learning'])[i] == 0) {
+            classBar.setAttribute('class', 'ml-class-bar-blank');
+            classBar.setAttribute('style', 'width: 200px; height: 20px');
+            classBar.innerHTML = "<h4 class=\"fnt-percentage\">0%</h4>";
+        } else {
+            classBar.setAttribute('class', 'ml-class-bar-fill');
+            classBar.setAttribute('style', 'width: 200px; height: 20px');
+            classBar.innerHTML = "<h4 class=\"fnt-percentage\" style=\"color: green\">100%</h4>";
+        }
+        tmpClsBar.appendChild(classBar);
+        ml_divs[i].appendChild(tmpClsBar);
+
+        mlResBox.appendChild(ml_divs[i]);
+    }
+
+    infResBox.appendChild(mlResBox);
+
+    var dlResBox = document.createElement('div');
+    dlResBox.appendChild(line);
+    dlResBox.setAttribute('class', 'inferece-dl-result-header');
+    dlResBox.setAttribute('style', 'width: 100%; overflow: hidden');
+    dlResBox.innerHTML += "<h4 class=\"fnt-config-name\">Deep Learning</h4>";
+
+    dl_divs = new Array(clsNumber);
+    for (var i=0; i<clsNumber; i++) {
+        dl_divs[i] = document.createElement('div');
+        dl_divs[i].setAttribute('class', 'class-accuracy-box');
+
+        var tmpClsName = document.createElement('div');
+        tmpClsName.setAttribute('class', 'class-name');
+        tmpClsName.innerHTML = "<h4 class=\"fnt-inf-class\">" + Object.keys(resultObject['deep-learning'])[i] + " : </h4>";
+
+        var tmpClsBar = document.createElement('div');
+        tmpClsBar.setAttribute('class', 'class-bar');
+
+        dl_divs[i].appendChild(tmpClsName);
+        dl_divs[i].appendChild(tmpClsBar);
+
+        var tmpClsBar = document.createElement('div');
+        tmpClsBar.setAttribute('class', 'class-bar');
+
+        var percent = Object.values(resultObject['deep-learning'])[i];
+
+        fillWidth = 200 * percent / 100;
+        blankWidth = 200 - fillWidth;
+        
+        if (fillWidth == 0) {
+            var blnkClassBar = document.createElement('div');
+            blnkClassBar.setAttribute('class', 'ml-class-bar-blank');
+            blnkClassBar.setAttribute('style', 'width: 200px; height: 20px');
+            tmpClsBar.appendChild(blnkClassBar);
+        } else if (blankWidth == 0) {
+            var fillClassBar = document.createElement('div');
+            fillClassBar.setAttribute('class', 'ml-class-bar-fill');
+            fillClassBar.setAttribute('style', 'width: 200px; height: 20px');
+            tmpClsBar.appendChild(fillClassBar);
+        } else {
+            console.log(blankWidth);
+            console.log(fillWidth);
+            var blnkClassBar = document.createElement('div');
+            blnkClassBar.setAttribute('class', 'ai-class-bar-blank');
+            blnkClassBar.setAttribute('style', 'width: ' + blankWidth + 'px; height: 20px');
+    
+            var fillClassBar = document.createElement('div');
+            fillClassBar.setAttribute('class', 'ai-class-bar-fill');
+            fillClassBar.setAttribute('style', 'width: ' + fillWidth + 'px; height: 20px');
+    
+            tmpClsBar.appendChild(fillClassBar);
+            tmpClsBar.appendChild(blnkClassBar);
+        }
+
+        var percentText = document.createElement('div');
+        percentText.setAttribute('class', 'ai-percent-box');
+        percentText.setAttribute('style', 'font-size: 14px; font-weight: 900; color: #404040; position: relative; top: 50%; transform: translate(0, -50%)')
+        percentText.innerHTML = percent + '%';
+
+        if (percent != 0 ) {
+            console.log('in');
+            percentText.removeAttribute('style');
+            percentText.setAttribute('style', 'font-size: 14px; font-weight: 900; color: green; position: relative; top: 50%; transform: translate(0, -50%)');
+        }
+        tmpClsBar.appendChild(percentText);
+
+        dl_divs[i].appendChild(tmpClsBar);
+
+        dlResBox.appendChild(dl_divs[i]);
+    }
+
+    infResBox.appendChild(dlResBox);
+    infOnBox.appendChild(infResBox);
+}
+
+function callInference(sendObject) {
+    var jsonData = JSON.stringify(sendObject);
+    
+    var _showLoad = function() {
+        console.log('_showLoad');
+        var loader = $("#inf-loader");
+        var text = $("h4.fnt-inf");
+
+        text.css("display", "none");
+        loader.css("display", "block");
+
+        var infBtn = $("button.inf-capture-box");
+        infBtn.attr('disabled', 'disabled');
+    }();
+
     $.ajax({
         type: 'POST',
-        url: "/sklearn",
+        url: "/inference",
         data: jsonData,
         dataType: 'JSON',
         success: function(result) {
-            console.log("result : " + result);
+            console.log("result : " + result.message);
+            var resultObject = JSON.parse(result.message);
+            var _showText = function() {
+                var loader = $('#inf-loader');
+                var text = $("h4.fnt-inf");
+
+                text.css("display", "block");
+                loader.css("display", "none");
+
+                var infBtn = $("button.inf-capture-box");
+                infBtn.removeAttr('disabled');
+            }();
+            updateBar(resultObject);
         },
         error: function(xtr, status, error) {
             console.log(xtr + ": " + status + ": " + error);
@@ -290,12 +530,33 @@ function callLearning() {
         dataType: 'JSON',
         success: function(result) {
             console.log("result : ", result);
+            var _showText = function() {
+                var loader = $("div.loader");
+                var text = $("h4.fnt-trn");
+
+                loader.css("display", "none");
+                text.css("display", "block");
+            }();
+
+            var _btnAble = function () {
+                $('button.trn-btn').removeAttr('disabled');
+            }();
+            
+            var _infViewDisable = function () {
+                var inferenceOn = $('div.inference-on');
+                if (inferenceOn != undefined) {
+                    inferenceOn.attr('display:none');
+                }
+            }
+
+            inferenceView();
         },
         error: function(xtr, status, error) {
             console.log(xtr + ": " + status + ": " + error);
         }
     })
 }
+
 
 function putImgToS3(sendObject) {
     var jsonData = JSON.stringify(sendObject);
